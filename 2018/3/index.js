@@ -2,6 +2,7 @@ const { createReadStream } = require('fs');
 const path = require('path');
 
 const grid = {}
+const nonOverlappingIds = {};
 let overlapTotal = 0;
 
 function main(){
@@ -31,6 +32,7 @@ function main(){
     });
     readable.on('close', () => {
       console.log(`Final overlap total: ${overlapTotal}`);
+      console.log(`Non-overlapping rects: ${Object.keys(nonOverlappingIds).join(',')}`);
       resolve();
     });
     readable.on('error', err => {
@@ -51,14 +53,20 @@ function getRectangleDefinition(str){
 }
 
 function crawlRectangle(rect){
+  nonOverlappingIds[rect.id] = true;
   for( let x=rect.x; x<rect.x+rect.width; x++ ){
     for( let y=rect.y; y<rect.y+rect.height; y++ ){
       if( !grid[x] ) grid[x] = {};
       if( !grid[x][y] ) grid[x][y] = [];
       grid[x][y].push(rect.id);
-      if( grid[x][y].length === 2 ){
-        //this is the first time this cell has overlapped
-        overlapTotal++;
+      if( grid[x][y].length > 1 ){
+        //this is an overlapping cell
+        delete nonOverlappingIds[rect.id];
+        if( grid[x][y].length === 2 ){
+          //this is the first time this cell has overlapped
+          overlapTotal++;
+          delete nonOverlappingIds[grid[x][y][0]]
+        }
       }
     }
   }
