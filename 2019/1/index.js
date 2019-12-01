@@ -1,6 +1,8 @@
 const { createReadStream } = require('fs');
 const path = require('path');
 
+let totalFuelRequirement = 0;
+
 function main(){
   return new Promise((resolve, reject) => {
     const readable = createReadStream(
@@ -13,13 +15,15 @@ function main(){
       const parts = currentData.split(/\n/g);
       leftovers = parts.splice(parts.length-1, 1)[0];
       for( let row of parts ){
-        //TODO: Parse row
+        const mass = parseInt(row, 10);
+        totalFuelRequirement += (Math.floor(mass/3) - 2);
       }
     });
     readable.on('end', () => {
       //finish up the leftovers
       if( leftovers.length ){
-        //TODO: Handle leftovers
+        const mass = parseInt(leftovers, 10);
+        totalFuelRequirement += (Math.floor(mass/3) - 2);
       }
     });
     readable.on('close', () => {
@@ -32,7 +36,10 @@ function main(){
 }
 
 main()
-.then(() => console.log('complete'))
+.then(() => {
+  console.log('complete')
+  console.log(`Total Fuel Requirement: ${totalFuelRequirement}`);
+})
 .catch(e => {
   console.error(e);
   process.exit(1);
