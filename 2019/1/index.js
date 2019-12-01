@@ -15,15 +15,13 @@ function main(){
       const parts = currentData.split(/\n/g);
       leftovers = parts.splice(parts.length-1, 1)[0];
       for( let row of parts ){
-        const mass = parseInt(row, 10);
-        totalFuelRequirement += (Math.floor(mass/3) - 2);
+        addModuleFuel(parseInt(row, 10));
       }
     });
     readable.on('end', () => {
       //finish up the leftovers
       if( leftovers.length ){
-        const mass = parseInt(leftovers, 10);
-        totalFuelRequirement += (Math.floor(mass/3) - 2);
+        addModuleFuel(parseInt(leftovers, 10));
       }
     });
     readable.on('close', () => {
@@ -33,6 +31,14 @@ function main(){
       reject(err);
     })
   })
+}
+
+function addModuleFuel(mass){
+  let fuelRequired = (Math.floor(mass/3) - 2);
+  while(fuelRequired > 0) {
+    totalFuelRequirement += fuelRequired;
+    fuelRequired = (Math.floor(fuelRequired/3) - 2);
+  }
 }
 
 main()
