@@ -3,6 +3,7 @@ const gatherInput = require('../../utils/gatherInput.js');
 
 const visitedMap = {};
 let currentShortestDistance;
+let currentFewestInstructions;
 let currentPosition = {
   x: 0,
   y: 0
@@ -11,7 +12,12 @@ let currentShortestPoint = {
   x: 0,
   y: 0
 }
+let currentFewestInstructionsPoint = {
+  x: 0,
+  y: 0
+}
 let currentWire = 0;
+let currentWireInstructions = 0;
 
 async function main(){
   try{
@@ -20,6 +26,7 @@ async function main(){
       (instruction, isNewWire) => { 
         if( isNewWire ){
           currentWire++;
+          currentWireInstructions = 0;
           currentPosition = {
             x: 0,
             y: 0
@@ -32,6 +39,8 @@ async function main(){
 
     console.log(`Shortest Manhattan Distance: ${currentShortestDistance}`)
     console.log(`Position of closest cross: [${currentShortestPoint.x},${currentShortestPoint.y}]`)
+    console.log(`Fewest Instructions: ${currentFewestInstructions}`)
+    console.log(`Position of cross with fewest instructions: [${currentFewestInstructionsPoint.x},${currentFewestInstructionsPoint.y}]`)
   }
   catch (e){
     console.error(e);
@@ -47,24 +56,28 @@ function layWire(instruction){
   switch(direction){
     case "R":
       for( let i=0; i<amount; i++ ){
+        currentWireInstructions++;
         currentPosition.x += 1;
         checkCurrentPosition();
       }
       break;
     case "L":
       for( let i=0; i<amount; i++ ){
+        currentWireInstructions++;
         currentPosition.x -= 1;
         checkCurrentPosition();
       }
       break;
     case "D":
       for( let i=0; i<amount; i++ ){
+        currentWireInstructions++;
         currentPosition.y -= 1;
         checkCurrentPosition();
       }
       break;
     case "U":
       for( let i=0; i<amount; i++ ){
+        currentWireInstructions++;
         currentPosition.y += 1;
         checkCurrentPosition();
       }
@@ -72,8 +85,15 @@ function layWire(instruction){
 }
 
 function checkCurrentPosition(){
+  //init the x,y position in the map
   if( !visitedMap[currentPosition.x] ) visitedMap[currentPosition.x] = {};
-  if( currentWire === 2 && visitedMap[currentPosition.x][currentPosition.y] ){
+  if( !visitedMap[currentPosition.x][currentPosition.y] ) visitedMap[currentPosition.x][currentPosition.y] = {};
+  //store the current wire's total steps to date (if it's the first time we've visited)
+  if( visitedMap[currentPosition.x][currentPosition.y][currentWire] === undefined ){
+    visitedMap[currentPosition.x][currentPosition.y][currentWire] = currentWireInstructions;
+  }
+
+  if( currentWire === 2 && visitedMap[currentPosition.x][currentPosition.y][1] !== undefined ){
     //check to see if this is the new closest point
     const currentDistance = Math.abs(currentPosition.x) + Math.abs(currentPosition.y);
     if( 
@@ -84,10 +104,14 @@ function checkCurrentPosition(){
       currentShortestDistance = currentDistance;
       Object.assign(currentShortestPoint, currentPosition);
     }
-  }
-  else if( currentWire == 1){
-    //this is the first time we have visited this node
-    visitedMap[currentPosition.x][currentPosition.y] = true
+
+    //Now check to see if this is the new fewest set of instructions
+    const currentInstructions = visitedMap[currentPosition.x][currentPosition.y][1]
+      + visitedMap[currentPosition.x][currentPosition.y][2]
+    if( currentFewestInstructions === undefined || currentInstructions < currentFewestInstructions ){
+      currentFewestInstructions = currentInstructions;
+      Object.assign(currentFewestInstructionsPoint, currentPosition);
+    }
   }
 }
 
