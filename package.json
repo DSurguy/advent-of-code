@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "puzzle": "ts-node index"
   },
   "repository": {
     "type": "git",
@@ -17,6 +17,11 @@
   },
   "homepage": "https://github.com/DSurguy/advent-of-code#readme",
   "dependencies": {
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3",
     "yargs-parser": "^16.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.17"
   }
 }
