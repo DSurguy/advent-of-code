@@ -45,7 +45,6 @@ export default class IntcodeProcessor {
             this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2]),
             this.instructions[opcodeIndex+3]
           ]
-          console.log(instruction, params)
           this.instructions[params[2]] = params[0] + params[1];
           opcodeIndex += 4;
         break;
@@ -56,7 +55,6 @@ export default class IntcodeProcessor {
             this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2]),
             this.instructions[opcodeIndex+3]
           ]
-          console.log(instruction, params)
           this.instructions[this.instructions[opcodeIndex+3]] = params[0] * params[1];
           opcodeIndex += 4;
         break;
@@ -72,17 +70,15 @@ export default class IntcodeProcessor {
             inputValue = parseInt(await prompt("Input: "), 10);
           }
           this.inputPosition++;
-          console.log(instruction, params)
           this.instructions[params[0]] = inputValue;
           opcodeIndex += 2;
         break;
         case 4:
           //output
           params = [
-            this.instructions[opcodeIndex+1]
+            this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1])
           ]
-          console.log(instruction, params)
-          this.output.push(this.instructions[params[0]])
+          this.output.push(params[0])
           opcodeIndex += 2;
         break;
         case 5:
@@ -91,10 +87,8 @@ export default class IntcodeProcessor {
             this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1]),
             this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2])
           ]
-          console.log(instruction, [this.instructions[opcodeIndex+1], this.instructions[opcodeIndex+2]], params)
           if( params[0] !== 0 ) opcodeIndex = params[1];
           else opcodeIndex += 3;
-          console.log(opcodeIndex)
         break;
         case 6:
           //jumpIfFalse
@@ -102,10 +96,8 @@ export default class IntcodeProcessor {
             this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1]),
             this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2])
           ]
-          console.log(instruction, params)
           if( params[0] === 0 ) opcodeIndex = params[1];
           else opcodeIndex += 3;
-          console.log(opcodeIndex)
         break;
         case 7:
           //SetFlagIfLess
@@ -114,7 +106,6 @@ export default class IntcodeProcessor {
             this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2]),
             this.instructions[opcodeIndex+3]
           ]
-          console.log(instruction, params)
           if( params[0] < params[1] ) this.instructions[params[2]] = 1;
           else this.instructions[params[2]] = 0;
           opcodeIndex += 4;
@@ -126,7 +117,6 @@ export default class IntcodeProcessor {
             this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2]),
             this.instructions[opcodeIndex+3]
           ]
-          console.log(instruction, params)
           if( params[0] === params[1] ) this.instructions[params[2]] = 1;
           else this.instructions[params[2]] = 0;
           opcodeIndex += 4;
