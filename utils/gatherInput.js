@@ -14,7 +14,7 @@ module.exports = async function (inputPath, partHandler, splitOn){
       const lines = currentData.split(/[\n\r]+/g).filter(line => line.length > 0);
       for( let lineIndex=0; lineIndex<lines.length; lineIndex++ ){
         if(lines[lineIndex-1] !== undefined ) isLine = true; //this is at least the second line here
-        const parts = lines[lineIndex].split(splitOn);
+        const parts = lines[lineIndex].split(splitOn).filter(part => part.length);
         if( lines[lineIndex+1] === undefined ) leftovers = parts.splice(parts.length-1, 1)[0]; //last line
         for( let val of parts ){
           partHandler(val, isLine);

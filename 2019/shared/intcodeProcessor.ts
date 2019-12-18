@@ -33,7 +33,7 @@ export default class IntcodeProcessor {
     this.output = [];
 
     let opcodeIndex = 0;
-    while( opcodeIndex < this.instructions.length && this.instructions[opcodeIndex] && this.instructions[opcodeIndex] !== 99 ){
+    while( opcodeIndex < this.instructions.length && this.instructions[opcodeIndex] !== undefined && this.instructions[opcodeIndex] !== 99 ){
       const instruction = this.parseOpcode(this.instructions[opcodeIndex])
       let params: number[];
       let inputValue: number;
@@ -71,6 +71,7 @@ export default class IntcodeProcessor {
           else{
             inputValue = parseInt(await prompt("Input: "), 10);
           }
+          this.inputPosition++;
           console.log(instruction, params)
           this.instructions[params[0]] = inputValue;
           opcodeIndex += 2;
@@ -90,9 +91,10 @@ export default class IntcodeProcessor {
             this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1]),
             this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2])
           ]
-          console.log(instruction, params)
+          console.log(instruction, [this.instructions[opcodeIndex+1], this.instructions[opcodeIndex+2]], params)
           if( params[0] !== 0 ) opcodeIndex = params[1];
           else opcodeIndex += 3;
+          console.log(opcodeIndex)
         break;
         case 6:
           //jumpIfFalse
@@ -103,6 +105,7 @@ export default class IntcodeProcessor {
           console.log(instruction, params)
           if( params[0] === 0 ) opcodeIndex = params[1];
           else opcodeIndex += 3;
+          console.log(opcodeIndex)
         break;
         case 7:
           //SetFlagIfLess

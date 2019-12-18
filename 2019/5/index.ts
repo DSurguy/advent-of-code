@@ -55,7 +55,7 @@ async function runTestSuite(){
     const processor = new IntcodeProcessor();
     await gatherInput(
       `2019/5/testInput.${test.testId}`,
-      (int: string) => { 
+      (int: string) => {
         testInts.push(parseInt(int, 10));
       },
       /,/g
