@@ -1,0 +1,104 @@
+[
+  {
+    "testId": "2.1",
+    "description": "Test Equal To 8 - Position",
+    "io": [
+      {
+        "input": [9],
+        "output": [0]
+      },
+      {
+        "input": [8],
+        "output": [1]
+      }
+    ]
+  },
+  {
+    "testId": "2.2",
+    "description": "Test Less Than 8 - Position",
+    "io": [
+      {
+        "input": [8],
+        "output": [0]
+      },
+      {
+        "input": [7],
+        "output": [1]
+      }
+    ]
+  },
+  {
+    "testId": "2.3",
+    "description": "Test Equal To 8 - Immediate",
+    "io": [
+      {
+        "input": [9],
+        "output": [0]
+      },
+      {
+        "input": [8],
+        "output": [1]
+      }
+    ]
+  },
+  {
+    "testId": "2.4",
+    "description": "Test Less Than 8 - Immediate",
+    "io": [
+      {
+        "input": [8],
+        "output": [0]
+      },
+      {
+        "input": [7],
+        "output": [1]
+      }
+    ]
+  },
+  {
+    "testId": "2.5",
+    "description": "Jump Test - Position",
+    "io": [
+      {
+        "input": [0],
+        "output": [0]
+      },
+      {
+        "input": [1],
+        "output": [1]
+      }
+    ]
+  },
+  {
+    "testId": "2.6",
+    "description": "Jump Test - Immediate",
+    "io": [
+      {
+        "input": [0],
+        "output": [0]
+      },
+      {
+        "input": [1],
+        "output": [1]
+      }
+    ]
+  },
+  {
+    "testId": "2.7",
+    "description": "Comprehensive",
+    "io": [
+      {
+        "input": [9],
+        "output": [999]
+      },
+      {
+        "input": [8],
+        "output": [1000]
+      },
+      {
+        "input": [7],
+        "output": [1001]
+      }
+    ]
+  }
+]

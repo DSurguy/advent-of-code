@@ -1,5 +1,4 @@
-import { exec, spawn } from 'child_process';
-import { resolve } from 'path';
+import { spawn } from 'child_process';
 const argv = require('yargs-parser')(process.argv.slice(2))
 
 function getPuzzleStringHelpMessage(puzzleString: string): string{
@@ -31,6 +30,12 @@ const puzzleDir = `${year}/${day}/index`;
 
 const spawnArgs = [puzzleDir]
 if( part ) spawnArgs.push(`--part ${part}`)
+//push on the rest of the args
+Object.keys(argv).forEach((arg) => {
+  if( arg !== '_' && arg !== 'p' && arg !== 'puzzle' ){
+    spawnArgs.push(`--${arg}=${argv[arg]}`)
+  }
+})
 
 spawn(
   `ts-node`, 

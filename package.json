@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/DSurguy/advent-of-code#readme",
   "dependencies": {
+    "colors": "^1.4.0",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.3",
     "yargs-parser": "^16.1.0"

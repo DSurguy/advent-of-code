@@ -20,7 +20,7 @@ export default class IntcodeProcessor {
   instructions: number[] = [];
   inputs: number[] = [];
   inputPosition: 0;
-  output: undefined | number = undefined;
+  output: number[] = [];
 
   async process(
     instructions: number[], 
@@ -30,58 +30,107 @@ export default class IntcodeProcessor {
     this.instructions = instructions.slice(0);
     this.inputs = inputs.slice(0);
     this.inputPosition = 0;
-    this.output = undefined;
+    this.output = [];
 
     let opcodeIndex = 0;
     while( opcodeIndex < this.instructions.length && this.instructions[opcodeIndex] && this.instructions[opcodeIndex] !== 99 ){
       const instruction = this.parseOpcode(this.instructions[opcodeIndex])
       let params: number[];
-      let destination: number;
       let inputValue: number;
-      console.log(instruction)
       switch(instruction.operation){
         case 1:
           //addition [op, inA, inB, out] => inA+inB into out
           params = [
             this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1]),
-            this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2])
+            this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2]),
+            this.instructions[opcodeIndex+3]
           ]
-          destination = this.instructions[opcodeIndex+3];
-          this.instructions[destination] = params[0] + params[1];
+          console.log(instruction, params)
+          this.instructions[params[2]] = params[0] + params[1];
           opcodeIndex += 4;
         break;
         case 2:
           //multiplication [op, inA, inB, out] => inA*inB into out
           params = [
             this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1]),
-            this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2])
+            this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2]),
+            this.instructions[opcodeIndex+3]
           ]
-          destination = this.instructions[opcodeIndex+3];
-          this.instructions[destination] = params[0] * params[1];
+          console.log(instruction, params)
+          this.instructions[this.instructions[opcodeIndex+3]] = params[0] * params[1];
           opcodeIndex += 4;
         break;
         case 3:
           //input
+          params = [
+            this.instructions[opcodeIndex+1]
+          ]
           if( this.inputs[this.inputPosition] !== undefined ){
             inputValue = this.inputs[this.inputPosition];
           }
           else{
             inputValue = parseInt(await prompt("Input: "), 10);
           }
-          destination = this.instructions[opcodeIndex+1];
-          this.instructions[destination] = inputValue;
+          console.log(instruction, params)
+          this.instructions[params[0]] = inputValue;
           opcodeIndex += 2;
         break;
         case 4:
           //output
-          const target = this.instructions[opcodeIndex+1];
-          console.log(`Output: ${this.instructions[target]}`);
+          params = [
+            this.instructions[opcodeIndex+1]
+          ]
+          console.log(instruction, params)
+          this.output.push(this.instructions[params[0]])
           opcodeIndex += 2;
+        break;
+        case 5:
+          //jumpIfTrue
+          params = [
+            this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1]),
+            this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2])
+          ]
+          console.log(instruction, params)
+          if( params[0] !== 0 ) opcodeIndex = params[1];
+          else opcodeIndex += 3;
+        break;
+        case 6:
+          //jumpIfFalse
+          params = [
+            this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1]),
+            this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2])
+          ]
+          console.log(instruction, params)
+          if( params[0] === 0 ) opcodeIndex = params[1];
+          else opcodeIndex += 3;
+        break;
+        case 7:
+          //SetFlagIfLess
+          params = [
+            this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1]),
+            this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2]),
+            this.instructions[opcodeIndex+3]
+          ]
+          console.log(instruction, params)
+          if( params[0] < params[1] ) this.instructions[params[2]] = 1;
+          else this.instructions[params[2]] = 0;
+          opcodeIndex += 4;
+        break;
+        case 8:
+          //SetFlagIfEqual
+          params = [
+            this.getParameterValue(instruction.parameterModes[0], this.instructions[opcodeIndex+1]),
+            this.getParameterValue(instruction.parameterModes[1], this.instructions[opcodeIndex+2]),
+            this.instructions[opcodeIndex+3]
+          ]
+          console.log(instruction, params)
+          if( params[0] === params[1] ) this.instructions[params[2]] = 1;
+          else this.instructions[params[2]] = 0;
+          opcodeIndex += 4;
         break;
       }
     }
 
-    this.output = this.instructions[0];
     return this.output;
   }
 
@@ -97,7 +146,6 @@ export default class IntcodeProcessor {
     for( let i=2; i<5; i++ ){
       parameterModes.push(parseInt(splitCode[i]||'0', 10))
     }
-    console.log(opcode, operation, parameterModes);
     return {
       operation,
       parameterModes
