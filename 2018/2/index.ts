@@ -1,14 +1,13 @@
-const fs = require('fs');
-const { createReadStream } = fs;
+const { createReadStream } = require('fs');
 const path = require('path');
 
 let duoCount = 0;
 let triCount = 0;
 const masks = {};
-let matchedMask = undefined;
+let matchedMask: string;
 
 function main(){
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const readable = createReadStream(
       path.resolve(__dirname, 'input')
     )
@@ -27,7 +26,7 @@ function main(){
       //finish up the leftovers
       if( leftovers.length ){
         incrementCountsIfMatch(leftovers);
-        if( !matchedMask ) generateMasks(boxId);
+        if( !matchedMask ) generateMasks(leftovers);
       }
     });
     readable.on('close', () => {
@@ -48,7 +47,8 @@ function incrementCountsIfMatch(boxId){
     charCounts[boxId[i]] = (charCounts[boxId[i]] || 0 ) + 1;
   }
   const counts = Object.values(charCounts);
-  let duo = tri = false;
+  let duo = false;
+  let tri = false;
   for( let count of counts ){
     if( count === 2 ) duo = true
     if( count === 3 ) tri = true

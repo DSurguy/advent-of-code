@@ -3,7 +3,7 @@ const path = require('path');
 
 let currentFrequency = 0;
 let foundFrequencies = {};
-let duplicate = undefined;
+let duplicate: number | undefined = undefined;
 let firstFinalFrequency = 0;
 
 function runFrequencyModulations(iteration = 0){

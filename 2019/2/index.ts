@@ -1,11 +1,32 @@
 const { createReadStream } = require('fs');
 const path = require('path');
-const argv = require('yargs-parser')(process.argv.slice(2))
+import { parseArgs } from 'util';
+const { values: rawArgv } = parseArgs({
+  args: Bun.argv,
+  options: {
+    part: {
+      type: 'string',
+      alias: 'p'
+    }
+  },
+  allowPositionals: true
+})
+const convert = {
+  part: (v: string): number => Number(v)
+}
+Object.entries(convert).forEach(([key, fn]) => {
+  if( rawArgv[key] ){
+    rawArgv[key] = fn(rawArgv[key]);
+  }
+})
+const argv = rawArgv as {
+  part?: number
+}
 
-let ints = [];
+let ints: number[] = [];
 
 function main(){
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const readable = createReadStream(
       path.resolve(__dirname, 'input')
     )
@@ -16,13 +37,13 @@ function main(){
       const parts = currentData.split(/,/g);
       leftovers = parts.splice(parts.length-1, 1)[0];
       for( let val of parts ){
-        ints.push(parseInt(val, 10))
+        ints.push(Number(val))
       }
     });
     readable.on('end', () => {
       //finish up the leftovers
       if( leftovers.length ){
-        ints.push(parseInt(leftovers, 10))
+        ints.push(Number(leftovers))
       }
     });
     readable.on('close', () => {

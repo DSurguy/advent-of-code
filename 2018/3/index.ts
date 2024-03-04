@@ -6,7 +6,7 @@ const nonOverlappingIds = {};
 let overlapTotal = 0;
 
 function main(){
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const readable = createReadStream(
       path.resolve(__dirname, 'input')
     )
@@ -43,6 +43,7 @@ function main(){
 
 function getRectangleDefinition(str){
   const rectParts = /#(\d+) @ (\d+),(\d+): (\d+)x(\d+)/.exec(str);
+  if( !rectParts ) throw new Error("Rect cannot be parsed");
   return {
     id: rectParts[1],
     x: parseInt(rectParts[2], 10),

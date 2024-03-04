@@ -1,16 +1,31 @@
-const argv = require('yargs-parser')(process.argv.slice(2))
-const inputs = require("./inputs.json");
+import { parseArgs } from 'util';
+const inputs = require("./inputs.json") as { min: number, max: number };
 
-const validPasswords = [];
-
-async function main(){
-  for( let password = inputs.min; password <= inputs.max; password++ ){
-    if( isValidPassword(password.toString()) ){
-      validPasswords.push(password)
-    }
-  }
-  console.log(`${validPasswords.length} valid passwords`);
+type Args = {
+  part?: number;
 }
+function getParsedArgs (): Args {
+  const { values: rawArgv } = parseArgs({
+    args: Bun.argv,
+    options: {
+      part: {
+        type: 'string',
+        alias: 'p'
+      }
+    },
+    allowPositionals: true
+  })
+  const convert: Record<string, Function> = {
+    part: (v: string): number => Number(v)
+  }
+  Object.entries(convert).forEach(([key, fn]) => {
+    if( rawArgv[key] ){
+      rawArgv[key] = fn(rawArgv[key]);
+    }
+  })
+  return rawArgv as Args;
+}
+const argv = getParsedArgs();
 
 function isValidPassword(password){
   let hasDouble = false;
@@ -54,4 +69,10 @@ function chainCountsAsDouble(chainCount){
   }
 }
 
-main();
+const validPasswords: number[] = [];
+for( let password = inputs.min; password <= inputs.max; password++ ){
+  if( isValidPassword(password.toString()) ){
+    validPasswords.push(password)
+  }
+}
+console.log(`${validPasswords.length} valid passwords`);

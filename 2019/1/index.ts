@@ -4,7 +4,7 @@ const path = require('path');
 let totalFuelRequirement = 0;
 
 function main(){
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const readable = createReadStream(
       path.resolve(__dirname, 'input')
     )

@@ -1,5 +1,29 @@
-const argv = require('yargs-parser')(process.argv.slice(2))
+import { parseArgs } from 'util';
 const gatherInput = require('../../utils/gatherInput.js');
+
+type Args = {
+  input?: String;
+}
+function getParsedArgs (): Args {
+  const { values: rawArgv } = parseArgs({
+    args: Bun.argv,
+    options: {
+      input: {
+        type: 'string',
+        alias: 'i'
+      }
+    },
+    allowPositionals: true
+  })
+  const convert: Record<string, Function> = {}
+  Object.entries(convert).forEach(([key, fn]) => {
+    if( rawArgv[key] ){
+      rawArgv[key] = fn(rawArgv[key]);
+    }
+  })
+  return rawArgv as Args;
+}
+const argv = getParsedArgs();
 
 const visitedMap = {};
 let currentShortestDistance;

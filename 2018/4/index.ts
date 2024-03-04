@@ -3,11 +3,20 @@ const path = require('path');
 const sortedInsert = require('../../utils/sortedInsert.js');
 const compare = require('../../utils/compare.js');
 
-const sortedActivities = []
+const sortedActivities: {
+  raw: string,
+  year: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number,
+  activity: 'sleep' | 'wakes up' | 'shift',
+  guardId?: number
+}[] = []
 const guards = {};
 
 function gatherSortedActivities(){
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     const readable = createReadStream(
       path.resolve(__dirname, 'input')
     )
@@ -98,7 +107,7 @@ gatherSortedActivities()
   for( let activity of sortedActivities ){
     //update the current guard, making a new one if necessary
     if( activity.activity === 'shift' ){
-      if( !guards[activity.guardId] ) guards[activity.guardId] = {
+      if( !guards[activity.guardId!] ) guards[activity.guardId!] = {
         id: activity.guardId,
         sleepMinutes: new Array(60).fill(1).reduce((map, val, index) => {
           map[index] = [];
@@ -107,7 +116,7 @@ gatherSortedActivities()
         totalMinutesAsleep: 0,
         mostSleepyMinute: undefined
       }
-      currentGuard = guards[activity.guardId];
+      currentGuard = guards[activity.guardId!];
     }
     else if( activity.activity === 'sleep' ){
       lastSleepMinute = activity.minute;
