@@ -1,8 +1,8 @@
-const { createReadStream } = require('fs');
+import { createReadStream } from 'fs';
 const path = require('path');
 
-module.exports = async function (inputPath, partHandler, splitOn){
-  return new Promise((resolve, reject) => {
+module.exports = async function (inputPath: string, partHandler: (v: string, isLine?: boolean) => void, splitOn: string | RegExp){
+  return new Promise<void>((resolve, reject) => {
     const readable = createReadStream(
       path.resolve(__dirname, '../', inputPath)
     )

@@ -1,4 +1,6 @@
-const defaultCompare = require('./compare.js');
+import defaultCompare from './compare';
+
+type comparator<T> = (a: T, b: T) => 1 | -1 | 0;
 
 /**
  * Execute a binary search to insert a new item into an existing list
@@ -7,7 +9,7 @@ const defaultCompare = require('./compare.js');
  * When an exact match comes out of the comparison, the new item is 
  *  added at the end of the section of matching items
  */
-function sortedInsert(list, newItem, externalCompare){
+function sortedInsert<T = any>(list: T[], newItem: T, externalCompare: comparator<T> = defaultCompare ){
   const compare = externalCompare || defaultCompare;
 
   if( !list.length ){
