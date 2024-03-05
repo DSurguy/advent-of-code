@@ -6,7 +6,6 @@ const argv = getParsedArgs();
 
 const isSymbol = (s: string = '') => /[^\d\.]/.test(s);
 const isDigit = (s: string = '') => /\d/.test(s);
-const isGear = (s: string = '') => /\*/.test(s);
 
 const filename = argv.mock ? 'day3.mock' : 'day3.input';
 const inputFile = file(resolve(__dirname, filename));
@@ -64,9 +63,7 @@ type Part = {
 const parseSchematic = (schematic: SchematicNode[][]) => {
   // Tools can be referenced by their schematic node
   const tools = new Map<Symbol, Tool>();
-  // Parts will be referenced by their schematic nodes as well
   const parts: Part[] = [];
-  const partsByRef = new Map<Symbol, Part>();
 
   let partialNumber: Part | null = null;
 
@@ -121,8 +118,7 @@ const parseSchematic = (schematic: SchematicNode[][]) => {
 
   return {
     tools,
-    parts,
-    partsByRef
+    parts
   };
 }
 

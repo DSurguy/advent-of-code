@@ -1,5 +1,6 @@
 import { parseArgs } from "util";
 
+// TODO: Make this generic. The types are actually hard tho?
 type Args = {
   mock?: boolean;
 }
@@ -25,4 +26,3 @@ export function getParsedArgs (): Args {
   })
   return rawArgv as Args;
 }
-const argv = getParsedArgs();
