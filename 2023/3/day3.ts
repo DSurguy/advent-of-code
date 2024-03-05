@@ -1,4 +1,4 @@
-import { file, parseArgs } from 'bun';
+import { file } from 'bun';
 import { resolve } from 'path';
 import { getParsedArgs } from './getArgs';
 
