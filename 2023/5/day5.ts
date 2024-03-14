@@ -116,3 +116,29 @@ console.log(
     return location < lowestLocation ? location : lowestLocation;
   }, -1n)
 )
+
+const seedPairs = seeds.reduce((acc, seed, index) => {
+  if( index % 2 === 0 ) {
+    acc.push([seed, 0n]);
+  } else {
+    acc[acc.length - 1][1] = seed;
+  }
+  
+  return acc;
+}, [] as [bigint, bigint][])
+console.log(
+  'Part Two',
+  seedPairs.reduce((lowestLocation, [start, range]) => {
+    console.log("Crunching pair", start, range)
+    let lowestPairLocation: bigint = -1n;
+    for( let i=0n; i<range; i++ ){
+      const location = mapOrder.reduce((val, map) => {
+        return getMappedValue(map, val)!;
+      }, start + i)
+      if( lowestPairLocation === -1n ) lowestPairLocation = location;
+      else if( location < lowestPairLocation ) lowestPairLocation = location
+    }
+    if( lowestLocation === -1n ) return lowestPairLocation;
+    return lowestPairLocation < lowestLocation ? lowestPairLocation : lowestLocation;
+  }, -1n)
+)
