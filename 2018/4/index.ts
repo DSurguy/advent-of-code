@@ -1,6 +1,6 @@
-const { createReadStream } = require('fs');
-const path = require('path');
-const sortedInsert = require('../../utils/sortedInsert.js');
+import { createReadStream } from 'fs';
+import path from 'path';
+import { sortedInsert } from '../../utils/sortedInsert.js';
 const compare = require('../../utils/compare.js');
 
 const sortedActivities: {

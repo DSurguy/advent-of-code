@@ -9,7 +9,7 @@ type comparator<T> = (a: T, b: T) => 1 | -1 | 0;
  * When an exact match comes out of the comparison, the new item is 
  *  added at the end of the section of matching items
  */
-function sortedInsert<T = any>(list: T[], newItem: T, externalCompare: comparator<T> = defaultCompare ){
+export function sortedInsert<T = any>(list: T[], newItem: T, externalCompare: comparator<T> = defaultCompare ){
   const compare = externalCompare || defaultCompare;
 
   if( !list.length ){
@@ -53,5 +53,3 @@ function sortedInsert<T = any>(list: T[], newItem: T, externalCompare: comparato
   }
 
 }
-
-module.exports = sortedInsert;
